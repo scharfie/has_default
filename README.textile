@@ -13,6 +13,7 @@ attribute reader for the attribute is added which calls the same block.
 
 The above example would be something like this if written directly:
 
+<pre>
   class Post < ActiveRecord::Base
     def permalink_proc
       Proc.new { |record| 
@@ -29,3 +30,4 @@ The above example would be something like this if written directly:
       permalink_proc.call(self)
     end
   end
+</pre>  

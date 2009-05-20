@@ -21,6 +21,8 @@ module ActiveRecord
         self.class.has_default_values.each do |attribute, block|
           block.call(self)
         end
+        
+        return true
       end
     end
   

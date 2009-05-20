@@ -1,0 +1,31 @@
+A snippet says a thousand words:
+
+  class Post < ActiveRecord::Base
+    has_default :permalink do |record|
+      record[:permalink] = nil if record[:permalink].blank?
+      record[:permalink] ||= (record[:name] || '').downcase.gsub(/^[a-z0-9]+/, '-')
+    end
+  end
+
+A @before_validation@ callback is added which will look at all @has_default@ calls,
+and invoke the block for each (passing @self@ to the block).  In addition, an
+attribute reader for the attribute is added which calls the same block.
+
+The above example would be something like this if written directly:
+
+  class Post < ActiveRecord::Base
+    def permalink_proc
+      Proc.new { |record| 
+        record[:permalink] = nil if record[:permalink].blank?
+        record[:permalink] ||= (record[:name] || '').downcase.gsub(/^[a-z0-9]+/, '-')
+      }
+    end  
+  
+    def before_validation
+      permalink_proc.call(self)
+    end
+    
+    def permalink
+      permalink_proc.call(self)
+    end
+  end
